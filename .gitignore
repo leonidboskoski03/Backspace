@@ -1,0 +1,112 @@
+# =========================
+# OS FILES
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# NODE / FRONTEND
+# =========================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+dist/
+build/
+out/
+coverage/
+
+.env
+.env.*
+!.env.example
+
+# =========================
+# ANGULAR
+# =========================
+.angular/
+.angular/cache/
+.tmp/
+
+# =========================
+# JAVA / SPRING / MAVEN
+# =========================
+target/
+*.log
+*.class
+*.jar
+*.war
+*.ear
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+
+# =========================
+# DOCKER
+# =========================
+docker-compose.override.yml
+*.pid
+
+# =========================
+# IDEs
+# =========================
+
+## IntelliJ / WebStorm
+.idea/
+*.iml
+
+## VS Code
+.vscode/
+.history/
+
+## Eclipse
+.project
+.classpath
+.settings/
+
+# =========================
+# DATABASE
+# =========================
+*.sqlite
+*.db
+
+# =========================
+# CACHE / TEMP
+# =========================
+tmp/
+temp/
+.cache/
+logs/
+
+# =========================
+# UPLOADS / GENERATED FILES
+# =========================
+uploads/
+public/uploads/
+generated/
+
+# =========================
+# TEST OUTPUT
+# =========================
+test-results/
+reports/
+
+# =========================
+# SYSTEM SECRETS
+# =========================
+*.pem
+*.key
+*.crt
+
+# =========================
+# MISC
+# =========================
+*.swp
+*.swo
+*~
