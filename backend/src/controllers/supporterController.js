@@ -23,19 +23,27 @@ const registerSupporter = async (req, res) => {
     const exists = await Supporter.findOne({ email: data.email });
     if (exists) return res.status(409).json({ success: false, message: "Email already in use" });
 
-    const hashed = await bcrypt.hash(data.password, 10);
+    const hashed   = await bcrypt.hash(data.password, 10);
     const supporter = await Supporter.create({ ...data, password: hashed });
 
-    // const token = jwt.sign({ id: supporter._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    if (!process.env.JWT_SECRET) {
+      console.error('[auth] JWT_SECRET is not set in .env!')
+      return res.status(500).json({ message: 'Server misconfiguration' })
+    }
+
+    const token = jwt.sign({ id: supporter._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
+    console.log('[register] token generated:', token ? 'OK' : 'FAILED')
 
     res.status(201).json({
-      success: true,
-      message: "Supporter registered",
+      success:   true,
+      message:   "Supporter registered",
+      token,
       supporter: {
-        id: supporter._id,
+        id:        supporter._id,
         firstName: supporter.firstName,
-        lastName: supporter.lastName,
-        email: supporter.email,
+        lastName:  supporter.lastName,
+        email:     supporter.email,
       },
     });
   } catch (err) {
@@ -56,16 +64,23 @@ const loginSupporter = async (req, res) => {
     const match = await bcrypt.compare(data.password, supporter.password);
     if (!match) return res.status(401).json({ success: false, message: "Invalid credentials" });
 
-    // const token = jwt.sign({ id: supporter._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+    if (!process.env.JWT_SECRET) {
+      console.error('[auth] JWT_SECRET is not set in .env!')
+      return res.status(500).json({ message: 'Server misconfiguration' })
+    }
+
+    const token = jwt.sign({ id: supporter._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
+
+    console.log('[login] token generated:', token ? 'OK' : 'FAILED')
 
     res.status(200).json({
-      success: true,
-      // token,
+      success:   true,
+      token,
       supporter: {
-        id: supporter._id,
+        id:        supporter._id,
         firstName: supporter.firstName,
-        lastName: supporter.lastName,
-        email: supporter.email,
+        lastName:  supporter.lastName,
+        email:     supporter.email,
       },
     });
   } catch (err) {
@@ -76,4 +91,3 @@ const loginSupporter = async (req, res) => {
 };
 
 module.exports = { registerSupporter, loginSupporter };
-

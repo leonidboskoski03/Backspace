@@ -5,6 +5,8 @@ import { AuthPage } from './pages/AuthPage'
 import { DashboardLayout } from './components/DashboardLayout'
 import { Dashboard } from './pages/Dashboard'
 import { Profile } from './pages/Profile'
+import { ResidentsPage } from './pages/ResidentsPage'
+import { CalendarPage } from './pages/CalendarPage'
 
 function ProtectedRoute({ children }) {
   const { user } = useAuth()
@@ -29,7 +31,9 @@ export default function App() {
           element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}
         >
           <Route index element={<Dashboard />} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="residents" element={<ResidentsPage />} />
+          <Route path="calendar"  element={<CalendarPage />} />
+          <Route path="profile"   element={<Profile />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

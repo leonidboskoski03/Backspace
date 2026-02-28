@@ -1,44 +1,23 @@
-import { createContext, useContext, useState, useEffect } from 'react'
-
-const STORAGE_KEY = 'backspace_user'
-
-function getStoredUser() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return null
-    return JSON.parse(raw)
-  } catch {
-    return null
-  }
-}
-
-function setStoredUser(user) {
-  try {
-    if (user) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(user))
-    } else {
-      localStorage.removeItem(STORAGE_KEY)
-    }
-  } catch {
-    // ignore
-  }
-}
+import { createContext, useContext, useState } from 'react'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
-    const stored = localStorage.getItem('supporter')
-    return stored ? JSON.parse(stored) : null
+    try {
+      const stored = localStorage.getItem('supporter')
+      return stored ? JSON.parse(stored) : null
+    } catch {
+      return null
+    }
   })
 
-  const [hydrated, setHydrated] = useState(false)
-
-  useEffect(() => {
-    setHydrated(true)
-  }, [])
-
   const login = (data) => {
+    if (!data.token) {
+      console.error('[AuthContext] login() called but data.token is missing:', data)
+      return
+    }
+    console.log('[AuthContext] saving token to localStorage')
     localStorage.setItem('token', data.token)
     localStorage.setItem('supporter', JSON.stringify(data.supporter))
     setUser(data.supporter)
@@ -50,12 +29,6 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
-  // Persist user whenever it changes (e.g. from updateUser in same tick)
-  useEffect(() => {
-    if (!hydrated) return
-    setStoredUser(user)
-  }, [user, hydrated])
-
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       {children}
@@ -63,8 +36,4 @@ export function AuthProvider({ children }) {
   )
 }
 
-export function useAuth() {
-  const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
-  return ctx
-}
+export const useAuth = () => useContext(AuthContext)

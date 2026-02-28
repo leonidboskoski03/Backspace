@@ -71,12 +71,11 @@ export function AuthPage() {
                 })
 
                 const data = await response.json()
+                console.log('[AuthPage] response from backend:', data)
 
-                if (!response.ok) {
-                    throw new Error(data.message || 'Login failed')
-                }
+                if (!response.ok) throw new Error(data.message || 'Something went wrong')
 
-                login(data) // saves token + supporter to localStorage and updates context
+                login(data)
                 navigate('/dashboard')
             } else {
                 const firstName = (form.firstName?.value ?? '').trim()
