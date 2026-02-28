@@ -6,6 +6,7 @@ const morgan = require("morgan");
 
 const connectDB = require("./config/db");
 const residentRoutes = require("./routes/residentRoutes");
+const supporterRoutes = require("./routes/supporterRoutes");
 const startCronJob = require("./utils/cronJob");
 
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.json());
 
 // Routes
 app.use("/api/residents", residentRoutes);
+app.use("/api/supporters", supporterRoutes);
 
 // Health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
@@ -30,4 +32,3 @@ connectDB().then(() => {
     startCronJob();
   });
 });
-

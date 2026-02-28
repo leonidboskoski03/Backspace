@@ -27,23 +27,27 @@ function setStoredUser(user) {
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => getStoredUser())
+  const [user, setUser] = useState(() => {
+    const stored = localStorage.getItem('supporter')
+    return stored ? JSON.parse(stored) : null
+  })
+
   const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
     setHydrated(true)
   }, [])
 
-  function login(userData) {
-    setUser(userData)
+  const login = (data) => {
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('supporter', JSON.stringify(data.supporter))
+    setUser(data.supporter)
   }
 
-  function logout() {
+  const logout = () => {
+    localStorage.removeItem('token')
+    localStorage.removeItem('supporter')
     setUser(null)
-  }
-
-  function updateUser(updates) {
-    setUser((prev) => (prev ? { ...prev, ...updates } : null))
   }
 
   // Persist user whenever it changes (e.g. from updateUser in same tick)
@@ -53,7 +57,7 @@ export function AuthProvider({ children }) {
   }, [user, hydrated])
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
